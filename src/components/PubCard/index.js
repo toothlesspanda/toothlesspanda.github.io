@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Card, Badge } from "react-bootstrap";
 import "./card.css";
 
 const PubCard = ({ title, thumbnail, link, type }) => {
@@ -8,42 +7,33 @@ const PubCard = ({ title, thumbnail, link, type }) => {
   const showFallback = !thumbnail || imgError;
 
   return (
-    <a href={link} target="_blank" rel="noreferrer" style={{ textDecoration: "none" }}>
-      <Card
-        style={{ height: "130px", position: "relative" }}
-        bg={"dark"}
-        text={"white"}>
+    <a href={link} target="_blank" rel="noreferrer" style={{ textDecoration: "none", display: "block" }}>
+      <div className="pub-card" style={{ height: "140px", position: "relative", overflow: "hidden" }}>
         {showFallback ? (
-          <div
-            style={{
-              height: "100%",
-              background: type?.color ?? "#1a1a1a",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}>
+          <div style={{
+            height: "100%",
+            background: type?.color ?? "var(--surface)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}>
             {type?.logo && (
-              <img src={type.logo} alt={type.name} style={{ width: "60px", opacity: 0.9 }} />
+              <img src={type.logo} alt={type.name} style={{ width: "52px", opacity: 0.7 }} />
             )}
           </div>
         ) : (
-          <Card.Img
-            style={{ height: "100%", objectFit: "cover" }}
-            variant="top"
+          <img
             src={thumbnail}
             alt={title}
             onError={() => setImgError(true)}
+            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
           />
         )}
         <div className="overlay">
-          <div>
-            <Badge className={"overlay__badge"} bg="light" text="dark">
-              {type?.name ?? ""}
-            </Badge>
-          </div>
-          <div className={"overlay__text"}>{title}</div>
+          <span className="overlay__badge">{type?.name ?? ""}</span>
+          <div className="overlay__text">{title}</div>
         </div>
-      </Card>
+      </div>
     </a>
   );
 };

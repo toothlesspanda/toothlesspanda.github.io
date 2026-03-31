@@ -1,46 +1,45 @@
-/* .card {
-  height: 130px;
-    width: 130px;
-    display: inline-block;
-} */
-/* 
-.card__image {
-  
-}
-.card__image > img {
-  width: 100%;
-}
-.card__title{
-
-} */
-
-.card {
-    border: 3px solid rgba(255, 255, 255, 0.5) !important;
-    border-radius: 10px;
-    box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.5);
-}
-
-.card > img {
+.pub-card {
+  border: 1px solid var(--border);
   border-radius: 10px;
+  background: var(--surface);
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+  transition: transform 0.15s, box-shadow 0.15s;
 }
 
-.overlay{
+.pub-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.5);
+}
+
+.pub-card .overlay {
   position: absolute;
-    background: rgba(0,0,0,0.5);
-    width: 100%;
-    height: 100%;
-    color: white;
-    border-radius: 10px;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.65) 40%, transparent 100%);
 }
 
-.overlay__badge {
+.pub-card .overlay__badge {
   position: absolute;
-    left: 10px;
-    top: 10px;
+  top: 8px;
+  left: 8px;
+  background: var(--yellow);
+  color: #1c1c1c;
+  font-family: var(--font);
+  font-size: 0.8em;
+  border-radius: 6px;
+  padding: 2px 8px;
 }
 
-.overlay__text{
+.pub-card .overlay__text {
   position: absolute;
   bottom: 10px;
   left: 10px;
+  right: 10px;
+  font-size: 0.85em;
+  font-family: var(--font);
+  color: #eeeeee;
+  line-height: 1.4;
 }

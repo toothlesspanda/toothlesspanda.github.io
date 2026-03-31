@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Container, Row, Col } from "react-bootstrap";
 import Layout from "../Layout";
 import PubCard from "../../components/PubCard";
 import {
@@ -11,7 +10,7 @@ import devtoLogo from "../../images/devto-logo.svg";
 
 const PublicationType = Object.freeze({
   MEDIUM: { name: "Medium", color: "#1a1a1a", logo: mediumLogo },
-  DEVTO: { name: "dev.to", color: "#0a0a0a", logo: devtoLogo },
+  DEVTO:  { name: "dev.to",  color: "#0a0a0a", logo: devtoLogo  },
 });
 
 const Home = () => {
@@ -52,28 +51,26 @@ const Home = () => {
 
   return (
     <Layout title="Home">
-      <Container
-        style={{
-          maxWidth: "100%",
-          background: "rgba(0, 0, 0, 0.3)",
-          padding: "22px",
-          marginTop: "50px",
-          paddingTop: "50px",
-          marginBottom: "50px",
+      <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "40px 24px" }}>
+        <p style={{ color: "var(--text-muted)", letterSpacing: "2px", fontSize: "0.85em", marginBottom: "24px" }}>
+          LATEST WRITING
+        </p>
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
+          gap: "16px",
         }}>
-        <Row xs={2} md={3} lg={4} className="g-4">
           {publications.map((item, idx) => (
-            <Col key={idx}>
-              <PubCard
-                title={item.title}
-                thumbnail={item.image}
-                link={item.link}
-                type={item.type}
-              />
-            </Col>
+            <PubCard
+              key={idx}
+              title={item.title}
+              thumbnail={item.image}
+              link={item.link}
+              type={item.type}
+            />
           ))}
-        </Row>
-      </Container>
+        </div>
+      </div>
     </Layout>
   );
 };

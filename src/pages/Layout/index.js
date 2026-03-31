@@ -1,105 +1,73 @@
-import React from "react";
-import { Container, Nav, Navbar, Col, Row } from "react-bootstrap";
-import { Link } from "react-router-dom";
-import {
-  Linkedin,
-  Medium,
-  Github,
-  Instagram,
-  ColumnsGap,
-} from "react-bootstrap-icons";
+import { NavLink } from "react-router-dom";
+import { Linkedin, Medium, Github, Instagram } from "react-bootstrap-icons";
 
-const Layout = ({ title, children }) => {
+const Layout = ({ children }) => {
+  const navLinkStyle = ({ isActive }) => ({
+    color: isActive ? "var(--yellow)" : "var(--text-muted)",
+    fontWeight: isActive ? 700 : 400,
+    letterSpacing: "1px",
+    fontSize: "1em",
+    textDecoration: "none",
+  });
+
   return (
-    <div className="">
-      <Container style={{ width: "100%", margin: "0 auto" }}>
-        <Row tyle={{ width: "100%" }}>
-          <Col>
-            <div
-              style={{
-                fontWeight: 700,
-                color: "white",
-                padding: "16px 0",
-              }}>
-              {"Inês de Matos".toUpperCase()}
-            </div>
-          </Col>
-          <Col>
-            <Navbar
-              bg="dark"
-              variant="dark"
-              style={{ justifyContent: "center" }}>
-              <Nav>
-                <Nav.Link className={title === "Home" ? "active" : ""}>
-                  <Link to={"/"}>Home</Link>
-                </Nav.Link>
-                <Nav.Link
-                  className={title === "About" ? "active" : ""}
-                  href="/about">
-                  <Link to={"/about"}>About me</Link>
-                </Nav.Link>
-              </Nav>
-            </Navbar>
-          </Col>
-        </Row>
-      </Container>
-      <div className="">
-        <div className=""> {children} </div>
-      </div>
+    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
 
-      <div
-        style={{
-          width: "100%",
-          position: "absolute",
-          bottom: "0%",
-          display: "contents",
+      {/* Header */}
+      <header style={{
+        borderBottom: "1px solid var(--border)",
+        background: "var(--surface)",
+        position: "sticky",
+        top: 0,
+        zIndex: 100,
+      }}>
+        <div style={{
+          maxWidth: "1100px",
+          margin: "0 auto",
+          padding: "16px 24px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
         }}>
-        <Container
-          style={{
-            justifyContent: "center",
-            background: "rgba(33,37,41)",
-            textAlign: "center",
-          }}>
-          <Row xs={1} md={4}>
-            <Col>
-              <a
-                target="__blank"
-                className="h6"
-                href="https://www.linkedin.com/in/inesdematos/">
-                <Linkedin className="h4 me-3" />
-                <span>@inesdematos</span>
-              </a>
-            </Col>
-            <Col>
-              <a
-                target="__blank"
-                className="h6"
-                href="https://inesdematos.medium.com/">
-                <Medium className="h4 me-3" />
-                <span>@inesdematos</span>
-              </a>
-            </Col>
-            <Col>
-              <a
-                target="__blank"
-                className="h6"
-                href="https://github.com/toothlesspanda">
-                <Github className="h4 me-3" />
-                <span>@toothlesspanda</span>
-              </a>
-            </Col>
-            <Col>
-              <a
-                target="__blank"
-                className="h6"
-                href="https://www.instagram.com/nenas.phot/">
-                <Instagram className="h4 me-3" />
-                <span>@nenas.phot</span>
-              </a>
-            </Col>
-          </Row>
-        </Container>
-      </div>
+          <NavLink to="/" style={{ color: "var(--yellow)", fontWeight: 400, fontSize: "1.1em", textDecoration: "none", fontFamily: "var(--font)" }}>
+            Inês de Matos
+          </NavLink>
+          <nav style={{ display: "flex", gap: "24px" }}>
+            <NavLink to="/" end style={navLinkStyle}>home</NavLink>
+            <NavLink to="/about" style={navLinkStyle}>about</NavLink>
+            <NavLink to="/projects" style={navLinkStyle}>projects</NavLink>
+          </nav>
+        </div>
+      </header>
+
+      {/* Content */}
+      <main style={{ flex: 1 }}>
+        {children}
+      </main>
+
+      {/* Footer */}
+      <footer style={{
+        borderTop: "1px solid var(--border)",
+        background: "var(--surface)",
+        padding: "28px 24px",
+        textAlign: "center",
+      }}>
+        <div style={{ display: "flex", justifyContent: "center", gap: "28px" }}>
+          <a target="_blank" rel="noreferrer" href="https://www.linkedin.com/in/inesdematos/" title="LinkedIn">
+            <Linkedin size={20} />
+          </a>
+          <a target="_blank" rel="noreferrer" href="https://inesdematos.medium.com/" title="Medium">
+            <Medium size={20} />
+          </a>
+          <a target="_blank" rel="noreferrer" href="https://github.com/toothlesspanda" title="GitHub">
+            <Github size={20} />
+          </a>
+          <a target="_blank" rel="noreferrer" href="https://www.instagram.com/nenas.phot/" title="Instagram">
+            <Instagram size={20} />
+          </a>
+        </div>
+      </footer>
+
     </div>
   );
 };
