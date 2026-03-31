@@ -1,67 +1,50 @@
-import React, { useEffect, useState } from "react";
-import { Card, Button, Badge } from "react-bootstrap";
+import { useState } from "react";
+import { Card, Badge } from "react-bootstrap";
 import "./card.css";
 
-const PubCard = ({ title, thumbnail, description, date }) => {
-  const [image, setImage] = useState();
+const PubCard = ({ title, thumbnail, link, type }) => {
+  const [imgError, setImgError] = useState(false);
 
-  useEffect(() => {
-    async function getImage() {
-      let imageBlob;
-      try {
-        imageBlob = await fetch(thumbnail, {
-          method: "GET",
-          cors: "no-cors",
-          headers: {
-            "Cross-Origin-Resource-Policy": "cross-origin",
-          },
-        });
-        console.log(imageBlob);
-        setImage(imageBlob);
-      } catch (err) {
-        return null;
-      }
-    }
-
-    getImage();
-  });
+  const showFallback = !thumbnail || imgError;
 
   return (
-    // <div className="card">
-    //   <div className="card__image">
-    //     <img alt={"*"} src={thumbnail} />
-    //   </div>
-    //   <div className="card__title">
-    //     <span>{title}</span>
-    //   </div>
-    // </div>
-    <div>
+    <a href={link} target="_blank" rel="noreferrer" style={{ textDecoration: "none" }}>
       <Card
-        // border="warning"
         style={{ height: "130px", position: "relative" }}
         bg={"dark"}
         text={"white"}>
-        <Card.Img
-          crossOrigin="anonymous"
-          style={{ height: "100%" }}
-          variant="top"
-          src={""}
-        />
-        {/* <Card.Body>
-        <div>
-          <span>{title}</span>
-        </div>
-      </Card.Body> */}
+        {showFallback ? (
+          <div
+            style={{
+              height: "100%",
+              background: type?.color ?? "#1a1a1a",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}>
+            {type?.logo && (
+              <img src={type.logo} alt={type.name} style={{ width: "60px", opacity: 0.9 }} />
+            )}
+          </div>
+        ) : (
+          <Card.Img
+            style={{ height: "100%", objectFit: "cover" }}
+            variant="top"
+            src={thumbnail}
+            alt={title}
+            onError={() => setImgError(true)}
+          />
+        )}
         <div className="overlay">
           <div>
-            <Badge className={"overlay__badge "} bg="light" text="dark">
-              Medium
+            <Badge className={"overlay__badge"} bg="light" text="dark">
+              {type?.name ?? ""}
             </Badge>
           </div>
           <div className={"overlay__text"}>{title}</div>
         </div>
       </Card>
-    </div>
+    </a>
   );
 };
 
