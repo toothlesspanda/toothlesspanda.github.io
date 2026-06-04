@@ -36,6 +36,7 @@ const Layout = ({ children }) => {
             <NavLink to="/" end style={navLinkStyle}>home</NavLink>
             <NavLink to="/about" style={navLinkStyle}>about</NavLink>
             <NavLink to="/projects" style={navLinkStyle}>projects</NavLink>
+            <a href={`${process.env.PUBLIC_URL}/cv.html`} style={{ color: "var(--text-muted)", fontWeight: 400, letterSpacing: "1px", fontSize: "1em", textDecoration: "none" }}>cv</a>
           </nav>
         </div>
       </header>
