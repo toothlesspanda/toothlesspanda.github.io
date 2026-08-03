@@ -2,6 +2,13 @@ import Layout from "../Layout";
 
 const projects = [
   {
+    name: "lucky-movie",
+    language: "Python",
+    stars: 0,
+    description: "AI-powered movie recommendation engine. Search a film, tune your mood with emotion sliders, and discover similar movies using Faiss, HuggingFace embeddings, and emotional profiling.",
+    url: "https://luckymovie.link",
+  },
+  {
     name: "eng-ladder-tool",
     language: "JavaScript",
     stars: 3,
