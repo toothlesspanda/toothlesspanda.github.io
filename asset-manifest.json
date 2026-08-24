@@ -1,8 +1,8 @@
 {
   "files": {
-    "main.css": "/static/css/main.2e876796.chunk.css",
-    "main.js": "/static/js/main.e74591d2.chunk.js",
-    "main.js.map": "/static/js/main.e74591d2.chunk.js.map",
+    "main.css": "/static/css/main.a920092f.chunk.css",
+    "main.js": "/static/js/main.45f63f9d.chunk.js",
+    "main.js.map": "/static/js/main.45f63f9d.chunk.js.map",
     "runtime-main.js": "/static/js/runtime-main.8b6593af.js",
     "runtime-main.js.map": "/static/js/runtime-main.8b6593af.js.map",
     "static/js/2.4d0fa18d.chunk.js": "/static/js/2.4d0fa18d.chunk.js",
@@ -10,7 +10,7 @@
     "static/js/3.f9997498.chunk.js": "/static/js/3.f9997498.chunk.js",
     "static/js/3.f9997498.chunk.js.map": "/static/js/3.f9997498.chunk.js.map",
     "index.html": "/index.html",
-    "static/css/main.2e876796.chunk.css.map": "/static/css/main.2e876796.chunk.css.map",
+    "static/css/main.a920092f.chunk.css.map": "/static/css/main.a920092f.chunk.css.map",
     "static/js/2.4d0fa18d.chunk.js.LICENSE.txt": "/static/js/2.4d0fa18d.chunk.js.LICENSE.txt",
     "static/media/devto-logo.0cb51c1e.svg": "/static/media/devto-logo.0cb51c1e.svg",
     "static/media/medium-logo.2931748a.svg": "/static/media/medium-logo.2931748a.svg",
@@ -19,7 +19,7 @@
   "entrypoints": [
     "static/js/runtime-main.8b6593af.js",
     "static/js/2.4d0fa18d.chunk.js",
-    "static/css/main.2e876796.chunk.css",
-    "static/js/main.e74591d2.chunk.js"
+    "static/css/main.a920092f.chunk.css",
+    "static/js/main.45f63f9d.chunk.js"
   ]
 }
