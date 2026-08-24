@@ -100,6 +100,7 @@ export const ProjectsContent = () => (
     {projects.map((project) => (
       <div
         key={project.name}
+        className="project-card"
         style={{
           background: "var(--surface)", border: "1px solid var(--border)",
           borderRadius: "10px", overflow: "hidden",
@@ -109,7 +110,7 @@ export const ProjectsContent = () => (
         onMouseLeave={e => e.currentTarget.style.borderColor = "var(--border)"}
       >
         {project.image && (
-          <div style={{
+          <div className="project-card__image" style={{
             width: "380px", flexShrink: 0,
             background: "var(--surface-alt)",
             display: "flex", alignItems: "center", justifyContent: "center",
@@ -167,7 +168,7 @@ const ArticleCard = ({ title, image, link, type }) => {
 
   return (
     <a href={link} target="_blank" rel="noreferrer" style={{ textDecoration: "none", display: "block" }}>
-      <div style={{
+      <div className="article-card" style={{
         background: "var(--surface)", border: "1px solid var(--border)",
         borderRadius: "10px", overflow: "hidden",
         display: "flex", transition: "border-color 0.15s",
@@ -176,8 +177,8 @@ const ArticleCard = ({ title, image, link, type }) => {
         onMouseLeave={e => e.currentTarget.style.borderColor = "var(--border)"}
       >
         {showImg && (
-          <div style={{
-            width: "180px", height: "120px", flexShrink: 0,
+          <div className="article-card__image" style={{
+            width: "180px", flexShrink: 0,
             background: "var(--surface-alt)", overflow: "hidden",
             borderRight: "1px solid var(--border)",
           }}>

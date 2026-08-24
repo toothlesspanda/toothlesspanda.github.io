@@ -643,11 +643,30 @@
   }
 
   .lab__console {
-    flex-direction: column;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
     align-items: center;
     gap: 20px;
     margin-top: 0;
     width: 100%;
+  }
+
+  .lab__console-center {
+    order: 0;
+    flex-basis: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* D-pad and A/B side by side */
+  .lab__controls-left {
+    order: 1;
+  }
+
+  .lab__controls-right {
+    order: 2;
   }
 
   .lab__title {
@@ -683,24 +702,6 @@
     letter-spacing: 2px;
   }
 
-  /* Controls row below screen */
-  .lab__controls-left,
-  .lab__controls-right {
-    align-self: center;
-  }
-
-  .lab__controls-left {
-    order: 1;
-  }
-
-  .lab__controls-right {
-    order: 2;
-  }
-
-  .lab__console-center {
-    order: 0;
-  }
-
   .lab__dpad {
     grid-template-columns: 32px 32px 32px;
     grid-template-rows: 32px 32px 32px;
@@ -718,12 +719,33 @@
     font-size: 0.85em;
   }
 
+  .lab__ab {
+    transform: rotate(-15deg);
+  }
+
   .lab__branding {
     font-size: 0.6em;
   }
 
   .lab__led-row {
     margin-bottom: 8px;
+  }
+
+  /* Projects: stack image above text */
+  .project-card {
+    flex-direction: column !important;
+  }
+
+  .project-card__image {
+    width: 100% !important;
+    max-height: 220px;
+    border-right: none !important;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* Articles: image fills card height */
+  .article-card__image {
+    width: 140px !important;
   }
 
   .retro-window {
