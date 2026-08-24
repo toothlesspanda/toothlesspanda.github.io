@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Sprite Base</title>
+<style>
+  body { background: #1a1a1a; color: #ccc; font-family: monospace; display: flex; flex-direction: column; align-items: center; padding: 40px; }
+  canvas { image-rendering: pixelated; border: 2px solid #333; margin: 20px 0; }
+  button { background: #7b3090; color: #fff; border: none; padding: 10px 24px; font-family: monospace; font-size: 1em; cursor: pointer; border-radius: 6px; margin: 8px; }
+  button:hover { background: #9a48a8; }
+  .frames { display: flex; gap: 40px; flex-wrap: wrap; justify-content: center; }
+  .frame-label { text-align: center; font-size: 0.8em; color: #888; margin-bottom: 4px; }
+  h3 { color: #e8d070; margin-top: 48px; margin-bottom: 0; }
+  .combined { margin-top: 32px; }
+  .combined canvas { border-color: #e8d070; }
+</style>
+</head>
+<body>
+<h2>Sprite Base — 24x24px</h2>
+<p>Edit in <a href="https://www.piskelapp.com/" target="_blank" style="color:#7b3090">Piskel</a> after downloading</p>
+
+<h3>Combined — Character + Dog</h3>
+<div class="frames">
+  <div>
+    <div class="frame-label">Run + Dog</div>
+    <canvas id="runDog" width="320" height="240"></canvas>
+  </div>
+  <div>
+    <div class="frame-label">Jump + Dog</div>
+    <canvas id="jumpDog" width="320" height="240"></canvas>
+  </div>
+</div>
+
+<div>
+  <button onclick="downloadCombo('runDog', run2, DOG_DY)">Download Run + Dog</button>
+  <button onclick="downloadCombo('jumpDog', jumpFrame, 0)">Download Jump + Dog</button>
+</div>
+
+<h3>Individual</h3>
+<div class="frames">
+  <div>
+    <div class="frame-label">Run</div>
+    <canvas id="run2" width="240" height="240"></canvas>
+  </div>
+  <div>
+    <div class="frame-label">Jump</div>
+    <canvas id="jump" width="240" height="240"></canvas>
+  </div>
+  <div>
+    <div class="frame-label">Dog</div>
+    <canvas id="dog" width="240" height="240"></canvas>
+  </div>
+</div>
+
+<div>
+  <button onclick="download('run2')">Download Run</button>
+  <button onclick="download('jump')">Download Jump</button>
+  <button onclick="download('dog')">Download Dog</button>
+  <button onclick="downloadSpritesheet()">Download Spritesheet (3 frames)</button>
+</div>
+
+<h3>Obstacles</h3>
+<div class="frames">
+  <div>
+    <div class="frame-label">Desk</div>
+    <canvas id="desk" width="240" height="240"></canvas>
+  </div>
+  <div>
+    <div class="frame-label">Boss</div>
+    <canvas id="boss" width="240" height="240"></canvas>
+  </div>
+  <div>
+    <div class="frame-label">Deadline</div>
+    <canvas id="deadline" width="240" height="240"></canvas>
+  </div>
+</div>
+
+<div>
+  <button onclick="download('desk')">Download Desk</button>
+  <button onclick="download('boss')">Download Boss</button>
+  <button onclick="download('deadline')">Download Deadline</button>
+</div>
+
+<p style="color:#666; font-size:0.85em; margin-top:32px;">Background: matrix-style binary rain (0/1) — generated in-game, no sprite needed.</p>
+
+<script>
+// Color palette — Character
+const _ = null;          // transparent
+const H = '#3a2a18';    // hair (warm brown)
+const C = '#4a3820';    // curl highlights
+const S = '#f0c8a0';    // skin
+const B = '#5a8ab0';    // blue eyes
+const L = '#88b8d8';    // lens tint (light blue glaze)
+const G = '#787878';    // glasses frame (medium grey)
+const T = '#e8e4dc';    // top/shirt (white tshirt)
+const P = '#7a9ab8';    // pants (light denim)
+const O = '#e8d070';    // shoes (soft yellow)
+const W = '#e8e0d0';    // whites/highlights/laces
+
+// Color palette — Dog
+const K = '#1a1a1a';    // dog black fur
+const J = '#2a2a2a';    // dog fur highlight
+
+// 24x24 sprites — side view, long curly hair with side bangs, glazed glasses, blue eyes
+// Run frame
+const run2 = [
+  [_,_,_,_,_,C,H,C,H,C,H,C,H,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,C,H,C,H,C,H,C,H,C,H,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,C,H,H,H,H,H,H,H,H,H,H,C,_,_,_,_,_,_,_,_,_],
+  [_,_,C,H,C,H,H,H,H,H,H,H,H,C,H,C,_,_,_,_,_,_,_,_],
+  [_,_,H,C,H,H,H,H,H,H,H,H,H,H,H,C,H,_,_,_,_,_,_,_],
+  [_,_,C,H,H,H,H,H,H,H,H,H,H,H,H,H,C,_,_,_,_,_,_,_],
+  [_,_,H,C,H,H,H,H,H,S,S,S,S,S,S,H,C,_,_,_,_,_,_,_],
+  [_,_,C,H,C,H,H,H,S,S,S,S,S,S,S,H,H,_,_,_,_,_,_,_],
+  [_,_,H,C,S,G,G,G,S,S,S,G,G,G,S,C,H,_,_,_,_,_,_,_],
+  [_,_,_,C,G,L,L,L,G,G,G,L,L,L,G,C,_,_,_,_,_,_,_,_],
+  [_,_,H,C,G,L,L,L,G,S,G,L,L,L,G,C,H,_,_,_,_,_,_,_],
+  [_,_,C,H,S,G,G,G,S,S,S,G,G,G,S,H,C,_,_,_,_,_,_,_],
+  [_,_,H,C,C,S,S,S,S,S,S,S,S,S,C,H,C,_,_,_,_,_,_,_],
+  [_,_,C,H,C,_,S,S,S,S,S,S,S,_,C,H,_,_,_,_,_,_,_,_],
+  [_,_,_,H,C,_,T,T,T,T,T,T,T,_,C,H,_,_,_,_,_,_,_,_],
+  [_,_,_,C,H,S,T,T,T,T,T,T,T,S,H,C,_,_,_,_,_,_,_,_],
+  [_,_,_,H,C,S,T,T,T,T,T,T,T,S,C,H,_,_,_,_,_,_,_,_],
+  [_,_,_,C,_,S,_,T,T,T,T,T,_,S,_,C,_,_,_,_,_,_,_,_],
+  [_,_,_,H,_,S,_,P,P,P,P,P,_,S,_,H,_,_,_,_,_,_,_,_],
+  [_,_,_,C,_,_,_,P,P,P,P,P,_,_,_,C,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,P,P,_,P,P,_,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,P,P,P,_,_,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,O,W,_,O,W,_,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,O,O,O,_,O,O,O,_,_,_,_,_,_,_,_,_,_,_],
+];
+
+// Jump frame (legs tucked)
+const jumpFrame = [
+  [_,_,_,_,_,C,H,C,H,C,H,C,H,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,C,H,C,H,C,H,C,H,C,H,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,C,H,H,H,H,H,H,H,H,H,H,C,_,_,_,_,_,_,_,_,_],
+  [_,_,C,H,C,H,H,H,H,H,H,H,H,C,H,C,_,_,_,_,_,_,_,_],
+  [_,_,H,C,H,H,H,H,H,H,H,H,H,H,H,C,H,_,_,_,_,_,_,_],
+  [_,_,C,H,H,H,H,H,H,H,H,H,H,H,H,H,C,_,_,_,_,_,_,_],
+  [_,_,H,C,H,H,H,H,H,S,S,S,S,S,S,H,C,_,_,_,_,_,_,_],
+  [_,_,C,H,C,H,H,H,S,S,S,S,S,S,S,H,H,_,_,_,_,_,_,_],
+  [_,_,H,C,S,G,G,G,S,S,S,G,G,G,S,C,H,_,_,_,_,_,_,_],
+  [_,_,_,C,G,L,L,L,G,G,G,L,L,L,G,C,_,_,_,_,_,_,_,_],
+  [_,_,H,C,G,L,L,L,G,S,G,L,L,L,G,C,H,_,_,_,_,_,_,_],
+  [_,_,C,H,S,G,G,G,S,S,S,G,G,G,S,H,C,_,_,_,_,_,_,_],
+  [_,_,H,C,C,S,S,S,S,S,S,S,S,S,C,H,C,_,_,_,_,_,_,_],
+  [_,_,C,H,C,_,S,S,S,S,S,S,S,_,C,H,_,_,_,_,_,_,_,_],
+  [_,_,_,H,C,_,T,T,T,T,T,T,T,_,C,H,_,_,_,_,_,_,_,_],
+  [_,_,_,C,H,S,T,T,T,T,T,T,T,S,H,C,_,_,_,_,_,_,_,_],
+  [_,_,_,H,C,S,T,T,T,T,T,T,T,S,C,H,_,_,_,_,_,_,_,_],
+  [_,_,_,C,_,S,_,T,T,T,T,T,_,S,_,C,_,_,_,_,_,_,_,_],
+  [_,_,_,H,_,_,_,P,P,P,P,P,_,_,_,H,_,_,_,_,_,_,_,_],
+  [_,_,_,C,_,_,_,P,P,P,P,P,_,_,_,C,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,P,P,P,P,P,_,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,O,W,O,_,O,W,O,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
+];
+
+// Dog — sitting, front view, black lab (skinny), white chest "tie", white paws, white nose tip
+const E = '#604020';    // dog eye (warm brown)
+const dogSprite = [
+  [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,_,K,K,K,K,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,K,K,K,K,K,K,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,K,K,K,K,K,K,K,K,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,K,K,K,E,K,K,E,K,K,K,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,K,K,K,K,K,K,K,K,K,K,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,K,K,_,K,K,K,K,_,K,K,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,_,K,W,W,K,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,_,K,K,K,K,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,_,K,K,K,K,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,K,K,W,W,K,K,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,K,K,W,W,K,K,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,K,K,K,K,K,K,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,W,K,K,K,K,K,K,W,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,K,K,_,_,K,K,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,K,K,_,_,K,K,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,W,W,_,_,W,W,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
+];
+
+// ── Scenery palette ──
+const F = '#606060';    // furniture grey
+const D = '#8b6530';    // desk wood
+const d = '#a07840';    // desk wood light
+const R = '#cc3030';    // red (angry/deadline)
+const U = '#2a3a70';    // suit dark blue
+const N = '#303030';    // dark (monitor, hair, shoes)
+const M = '#909090';    // light grey (screen)
+
+// Desk with monitor — medium obstacle
+const deskSprite = [
+  [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,N,N,N,N,N,N,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,N,M,M,M,M,N,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,N,M,M,M,M,N,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,N,M,M,M,M,N,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,N,N,N,N,N,N,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,_,_,N,N,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,_,N,N,N,N,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,D,D,D,D,D,D,D,D,D,D,D,D,D,D,_,_,_,_,_],
+  [_,_,_,_,_,D,d,d,d,d,d,d,d,d,d,d,d,d,D,_,_,_,_,_],
+  [_,_,_,_,_,D,D,_,_,_,_,_,_,_,_,_,_,D,D,_,_,_,_,_],
+  [_,_,_,_,_,D,D,_,_,_,_,_,_,_,_,_,_,D,D,_,_,_,_,_],
+  [_,_,_,_,_,D,D,_,_,_,_,_,_,_,_,_,_,D,D,_,_,_,_,_],
+  [_,_,_,_,_,D,D,_,_,_,_,_,_,_,_,_,_,D,D,_,_,_,_,_],
+  [_,_,_,_,_,D,D,_,_,_,_,_,_,_,_,_,_,D,D,_,_,_,_,_],
+  [_,_,_,_,_,D,D,_,_,_,_,_,_,_,_,_,_,D,D,_,_,_,_,_],
+  [_,_,_,_,_,D,D,_,_,_,_,_,_,_,_,_,_,D,D,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
+];
+
+// Angry Boss — tall obstacle (suit, red tie, angry V eyebrows)
+const bossSprite = [
+  [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,_,N,N,N,N,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,N,N,N,N,N,N,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,S,S,S,S,S,S,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,N,S,N,N,S,N,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,S,N,S,S,N,S,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,S,S,S,S,S,S,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,S,R,R,R,R,S,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,_,S,S,S,S,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,_,_,S,S,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,U,U,U,U,U,U,U,U,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,U,U,U,R,R,U,U,U,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,U,U,U,R,R,U,U,U,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,U,U,U,U,U,U,U,U,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,S,U,U,U,U,U,U,S,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,U,U,_,_,U,U,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,U,U,_,_,U,U,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,U,U,_,_,U,U,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,U,U,_,_,U,U,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,N,N,_,_,N,N,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
+];
+
+// Deadline/Meeting — small obstacle (calendar with big "31")
+const deadlineSprite = [
+  [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,N,_,_,_,_,N,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,N,_,_,_,_,N,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,R,R,R,R,R,R,R,R,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,R,R,R,R,R,R,R,R,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,W,W,W,W,W,W,W,W,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,W,W,W,W,W,W,W,W,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,W,R,R,W,R,R,R,W,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,W,W,R,W,R,W,R,W,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,W,R,R,W,R,W,R,W,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,W,W,R,W,R,W,R,W,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,W,R,R,W,R,R,R,W,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,W,W,W,W,W,W,W,W,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
+];
+
+const allSprites = { run2, jump: jumpFrame, dog: dogSprite, desk: deskSprite, boss: bossSprite, deadline: deadlineSprite };
+
+function drawSprite(canvasId, sprite) {
+  const canvas = document.getElementById(canvasId);
+  const ctx = canvas.getContext('2d');
+  const scale = 10; // 24 * 10 = 240
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Checkerboard background (transparency indicator)
+  for (let y = 0; y < 24; y++) {
+    for (let x = 0; x < 24; x++) {
+      ctx.fillStyle = (x + y) % 2 === 0 ? '#3a3a3a' : '#333333';
+      ctx.fillRect(x * scale, y * scale, scale, scale);
+    }
+  }
+
+  // Draw pixels
+  for (let y = 0; y < sprite.length; y++) {
+    for (let x = 0; x < sprite[y].length; x++) {
+      if (sprite[y][x]) {
+        ctx.fillStyle = sprite[y][x];
+        ctx.fillRect(x * scale, y * scale, scale, scale);
+      }
+    }
+  }
+
+  // Grid
+  ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+  for (let i = 0; i <= 24; i++) {
+    ctx.beginPath(); ctx.moveTo(i * scale, 0); ctx.lineTo(i * scale, 240); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0, i * scale); ctx.lineTo(240, i * scale); ctx.stroke();
+  }
+}
+
+
+function getActualSizeCanvas(sprite) {
+  const c = document.createElement('canvas');
+  c.width = 24; c.height = 24;
+  const ctx = c.getContext('2d');
+  for (let y = 0; y < sprite.length; y++) {
+    for (let x = 0; x < sprite[y].length; x++) {
+      if (sprite[y][x]) {
+        ctx.fillStyle = sprite[y][x];
+        ctx.fillRect(x, y, 1, 1);
+      }
+    }
+  }
+  return c;
+}
+
+function download(id) {
+  const c = getActualSizeCanvas(allSprites[id]);
+  const a = document.createElement('a');
+  a.download = `sprite-${id}.png`;
+  a.href = c.toDataURL();
+  a.click();
+}
+
+
+function downloadSpritesheet() {
+  const frames = [run2, jumpFrame, dogSprite];
+  const c = document.createElement('canvas');
+  c.width = 24 * 3; c.height = 24;
+  const ctx = c.getContext('2d');
+  frames.forEach((sprite, fi) => {
+    for (let y = 0; y < sprite.length; y++) {
+      for (let x = 0; x < sprite[y].length; x++) {
+        if (sprite[y][x]) {
+          ctx.fillStyle = sprite[y][x];
+          ctx.fillRect(fi * 24 + x, y, 1, 1);
+        }
+      }
+    }
+  });
+  const a = document.createElement('a');
+  a.download = 'spritesheet.png';
+  a.href = c.toDataURL();
+  a.click();
+}
+
+// Dog offset in combo: x+10 puts dog 1px right of character hair, y+2 aligns paws with shoes
+const DOG_DX = 10;
+const DOG_DY = 2;
+const COMBO_W = 32;
+
+function drawCombo(canvasId, charSprite, dogDy) {
+  const canvas = document.getElementById(canvasId);
+  const ctx = canvas.getContext('2d');
+  const scale = 10;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  for (let y = 0; y < 24; y++) {
+    for (let x = 0; x < COMBO_W; x++) {
+      ctx.fillStyle = (x + y) % 2 === 0 ? '#3a3a3a' : '#333333';
+      ctx.fillRect(x * scale, y * scale, scale, scale);
+    }
+  }
+
+  for (let y = 0; y < charSprite.length; y++) {
+    for (let x = 0; x < charSprite[y].length; x++) {
+      if (charSprite[y][x]) {
+        ctx.fillStyle = charSprite[y][x];
+        ctx.fillRect(x * scale, y * scale, scale, scale);
+      }
+    }
+  }
+
+  for (let y = 0; y < dogSprite.length; y++) {
+    for (let x = 0; x < dogSprite[y].length; x++) {
+      if (dogSprite[y][x]) {
+        const dx = x + DOG_DX;
+        const dy = y + dogDy;
+        if (dx < COMBO_W && dy < 24) {
+          ctx.fillStyle = dogSprite[y][x];
+          ctx.fillRect(dx * scale, dy * scale, scale, scale);
+        }
+      }
+    }
+  }
+
+  ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+  for (let i = 0; i <= COMBO_W; i++) {
+    ctx.beginPath(); ctx.moveTo(i * scale, 0); ctx.lineTo(i * scale, 240); ctx.stroke();
+  }
+  for (let i = 0; i <= 24; i++) {
+    ctx.beginPath(); ctx.moveTo(0, i * scale); ctx.lineTo(COMBO_W * scale, i * scale); ctx.stroke();
+  }
+}
+
+function downloadCombo(canvasId, charSprite, dogDy) {
+  const c = document.createElement('canvas');
+  c.width = COMBO_W; c.height = 24;
+  const ctx = c.getContext('2d');
+  for (let y = 0; y < charSprite.length; y++) {
+    for (let x = 0; x < charSprite[y].length; x++) {
+      if (charSprite[y][x]) { ctx.fillStyle = charSprite[y][x]; ctx.fillRect(x, y, 1, 1); }
+    }
+  }
+  for (let y = 0; y < dogSprite.length; y++) {
+    for (let x = 0; x < dogSprite[y].length; x++) {
+      if (dogSprite[y][x]) {
+        const dx = x + DOG_DX, dy = y + dogDy;
+        if (dx < COMBO_W && dy < 24) { ctx.fillStyle = dogSprite[y][x]; ctx.fillRect(dx, dy, 1, 1); }
+      }
+    }
+  }
+  const a = document.createElement('a');
+  a.download = `${canvasId}.png`;
+  a.href = c.toDataURL();
+  a.click();
+}
+
+// Run: dog on ground (paws +2 to align with shoes at row 23)
+// Jump: dog jumps too (paws stay at row 21, same as character feet)
+drawCombo('runDog', run2, DOG_DY);
+drawCombo('jumpDog', jumpFrame, 0);
+drawSprite('run2', run2);
+drawSprite('jump', jumpFrame);
+drawSprite('dog', dogSprite);
+drawSprite('desk', deskSprite);
+drawSprite('boss', bossSprite);
+drawSprite('deadline', deadlineSprite);
+</script>
+</body>
+</html>
