@@ -147,25 +147,35 @@
     0 2px 0 rgba(255,255,255,0.06);
 }
 
-/* ── Hub (circular menu container) ── */
+/* ── Hub (vertical menu container) ── */
 
 .lab__hub {
   position: relative;
   width: 580px;
   height: 580px;
-}
-
-/* ── Center avatar + name ── */
-
-.lab__center {
-  position: absolute;
-  inset: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 20px;
+}
+
+/* ── Center avatar + play ── */
+
+.lab__center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
-  z-index: 2;
+}
+
+/* ── Menu list ── */
+
+.lab__menu-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
 }
 
 /* Side avatar (next to d-pad) */
@@ -252,26 +262,9 @@
   letter-spacing: 2px;
 }
 
-/* ── SVG connecting lines ── */
-
-.lab__lines {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-}
-
-.lab__line {
-  stroke: #7a8a72;
-  stroke-width: 1;
-  stroke-dasharray: 6 4;
-  opacity: 0.4;
-}
-
 /* ── Menu items — Game Boy A/B button style ── */
 
 .lab__menu-item {
-  position: absolute;
   background: linear-gradient(180deg, #5a6a52 0%, #3e4e38 100%);
   border: 2px solid #2e3a28;
   border-radius: 22px;
@@ -283,12 +276,10 @@
   letter-spacing: 3px;
   text-transform: lowercase;
   transition: box-shadow 0.15s, background 0.15s;
-  z-index: 3;
   white-space: nowrap;
   box-shadow:
     0 4px 0 #1e2a18,
     0 5px 10px rgba(0,0,0,0.18);
-  transform: translate(-50%, -50%);
   animation: lab-float 4s ease-in-out infinite;
 }
 
@@ -317,8 +308,8 @@
 }
 
 @keyframes lab-float {
-  0%, 100% { transform: translate(-50%, -50%); }
-  50%      { transform: translate(-50%, calc(-50% - 6px)); }
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
 }
 
 /* ── Branding text ── */
@@ -473,6 +464,23 @@
 
 .lab__controls-help span {
   white-space: nowrap;
+}
+
+.lab__controls-help--mobile {
+  display: none;
+}
+
+.lab__help-toggle {
+  display: none;
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  color: var(--text-muted);
+  font-family: var(--font);
+  font-size: 0.65em;
+  padding: 4px 12px;
+  cursor: pointer;
+  letter-spacing: 1px;
 }
 
 .lab__social-inline {
@@ -632,6 +640,68 @@
   background: #7b3090;
 }
 
+/* ── Game overlay ── */
+
+.lab__game-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #2a3228;
+  font-family: var(--font);
+  text-align: center;
+  background: rgba(154, 168, 144, 0.92);
+  z-index: 2;
+  padding: 16px;
+}
+
+.lab__game-title {
+  font-size: 1.8em;
+  margin: 0 0 8px;
+  letter-spacing: 3px;
+}
+
+.lab__game-sub {
+  font-size: 0.9em;
+  color: #4a5a42;
+  margin: 0 0 20px;
+}
+
+.lab__game-btn {
+  background: linear-gradient(180deg, #5a6a52 0%, #3e4e38 100%);
+  border: 2px solid #2e3a28;
+  border-radius: 22px;
+  color: #c8d4c0;
+  font-family: var(--font);
+  font-size: 1em;
+  padding: 10px 28px;
+  cursor: pointer;
+  letter-spacing: 2px;
+  box-shadow: 0 4px 0 #1e2a18, 0 5px 10px rgba(0,0,0,0.18);
+  transition: background 0.15s;
+}
+
+.lab__game-btn:hover {
+  background: linear-gradient(180deg, #6a7a62 0%, #4e5e48 100%);
+}
+
+.lab__game-btn:active {
+  box-shadow: 0 1px 0 #1e2a18;
+}
+
+.lab__game-hint {
+  font-size: 0.7em;
+  margin-top: 16px;
+  color: #4a5a42;
+}
+
+.lab__game-sprite {
+  image-rendering: pixelated;
+  margin-bottom: 12px;
+}
+
 /* ── Responsive ── */
 
 @media (max-width: 900px) {
@@ -765,10 +835,111 @@
   }
 
   .lab__controls-help {
+    display: none;
+  }
+
+  .lab__controls-help--mobile {
+    display: flex;
     gap: 10px;
     font-size: 0.6em;
     flex-wrap: wrap;
     justify-content: center;
+  }
+
+  .lab__help-toggle {
+    display: block;
+  }
+
+  .lab__game-title {
+    font-size: 1.3em;
+    letter-spacing: 2px;
+  }
+
+  .lab__game-sub {
+    font-size: 0.75em;
+    margin-bottom: 14px;
+  }
+
+  .lab__game-btn {
+    font-size: 0.85em;
+    padding: 8px 20px;
+  }
+
+  .lab__game-hint {
+    font-size: 0.6em;
+  }
+
+  .lab__game-sprite {
+    max-width: 80%;
+    height: auto;
+  }
+}
+
+@media (max-width: 500px) {
+  .lab__hub {
+    width: calc(100vw - 30px);
+    height: calc(100vw - 30px);
+  }
+
+  .lab__screen {
+    padding: 6px;
+    width: calc(100vw - 20px);
+  }
+
+  .lab__menu-item {
+    font-size: 0.7em;
+    padding: 6px 12px;
+    letter-spacing: 1px;
+  }
+
+  .lab__play {
+    width: 80px;
+    font-size: 0.75em;
+    padding: 6px 0;
+  }
+
+  .lab__title {
+    font-size: 1em;
+    letter-spacing: 2px;
+  }
+
+  .lab__subtitle {
+    font-size: 0.6em;
+  }
+
+  .lab__dpad {
+    grid-template-columns: 28px 28px 28px;
+    grid-template-rows: 28px 28px 28px;
+    width: 84px;
+    height: 84px;
+  }
+
+  .lab__dpad-btn {
+    font-size: 8px;
+  }
+
+  .lab__ab-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 0.75em;
+  }
+
+  .lab__ab {
+    gap: 16px;
+  }
+
+  .lab__game-title {
+    font-size: 1.1em;
+  }
+
+  .lab__game-sub {
+    font-size: 0.65em;
+    margin-bottom: 10px;
+  }
+
+  .lab__game-btn {
+    font-size: 0.75em;
+    padding: 7px 16px;
   }
 }
 

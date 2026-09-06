@@ -8,7 +8,7 @@ import RetroWindow from "./RetroWindow";
 import Footer from "./Footer";
 import "./lab.css";
 
-const DPAD_MAP = { up: 0, right: 1, down: 2, left: 3 };
+const MENU_COUNT = 4;
 
 const Lab = () => {
   const [activeWindow, setActiveWindow] = useState(null);
@@ -53,8 +53,13 @@ const Lab = () => {
 
   const dpadPress = (dir) => {
     flash(dir);
-    setSelected(DPAD_MAP[dir]);
     setShowHint(false);
+    const goUp = dir === 'up' || dir === 'left';
+    setSelected((prev) => {
+      if (prev === null) return goUp ? MENU_COUNT - 1 : 0;
+      if (goUp) return (prev - 1 + MENU_COUNT) % MENU_COUNT;
+      return (prev + 1) % MENU_COUNT;
+    });
   };
 
   const checkCombo = (btn) => {
@@ -94,9 +99,9 @@ const Lab = () => {
       }
       switch (e.key) {
         case "ArrowUp":    dpadPress('up');    e.preventDefault(); break;
-        case "ArrowRight": dpadPress('right'); e.preventDefault(); break;
-        case "ArrowDown":  dpadPress('down');  e.preventDefault(); break;
         case "ArrowLeft":  dpadPress('left');  e.preventDefault(); break;
+        case "ArrowDown":  dpadPress('down');  e.preventDefault(); break;
+        case "ArrowRight": dpadPress('right'); e.preventDefault(); break;
         case "a": case "A": case "Enter": case " ": aPress(); e.preventDefault(); break;
         case "b": case "B": case "Escape": bPress(); e.preventDefault(); break;
         default: break;
