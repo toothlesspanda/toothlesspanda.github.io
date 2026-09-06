@@ -61,8 +61,8 @@
 <h3>Obstacles</h3>
 <div class="frames">
   <div>
-    <div class="frame-label">Desk</div>
-    <canvas id="desk" width="240" height="240"></canvas>
+    <div class="frame-label">Bug</div>
+    <canvas id="bug" width="240" height="240"></canvas>
   </div>
   <div>
     <div class="frame-label">Boss</div>
@@ -75,9 +75,37 @@
 </div>
 
 <div>
-  <button onclick="download('desk')">Download Desk</button>
+  <button onclick="download('bug')">Download Bug</button>
   <button onclick="download('boss')">Download Boss</button>
   <button onclick="download('deadline')">Download Deadline</button>
+</div>
+
+<h3>Sad (Game Over)</h3>
+<div class="frames">
+  <div>
+    <div class="frame-label">Sad</div>
+    <canvas id="sad" width="240" height="240"></canvas>
+  </div>
+  <div>
+    <div class="frame-label">Sad Dog</div>
+    <canvas id="sadDog" width="240" height="240"></canvas>
+  </div>
+  <div>
+    <div class="frame-label">Sad + Dog</div>
+    <canvas id="sadCombo" width="320" height="240"></canvas>
+  </div>
+</div>
+
+<h3>Celebration</h3>
+<div class="frames">
+  <div>
+    <div class="frame-label">Celebrate</div>
+    <canvas id="celebrate" width="240" height="240"></canvas>
+  </div>
+  <div>
+    <div class="frame-label">Celebrate + Dog</div>
+    <canvas id="celebrateDog" width="320" height="240"></canvas>
+  </div>
 </div>
 
 <p style="color:#666; font-size:0.85em; margin-top:32px;">Background: matrix-style binary rain (0/1) — generated in-game, no sprite needed.</p>
@@ -144,11 +172,11 @@ const jumpFrame = [
   [_,_,H,C,G,L,L,L,G,S,G,L,L,L,G,C,H,_,_,_,_,_,_,_],
   [_,_,C,H,S,G,G,G,S,S,S,G,G,G,S,H,C,_,_,_,_,_,_,_],
   [_,_,H,C,C,S,S,S,S,S,S,S,S,S,C,H,C,_,_,_,_,_,_,_],
-  [_,_,C,H,C,_,S,S,S,S,S,S,S,_,C,H,_,_,_,_,_,_,_,_],
+  [_,S,C,H,C,_,S,S,S,S,S,S,S,_,C,H,_,S,_,_,_,_,_,_],
+  [S,_,_,H,C,_,T,T,T,T,T,T,T,_,C,H,_,_,S,_,_,_,_,_],
+  [_,S,_,C,H,_,T,T,T,T,T,T,T,_,H,C,_,S,_,_,_,_,_,_],
   [_,_,_,H,C,_,T,T,T,T,T,T,T,_,C,H,_,_,_,_,_,_,_,_],
-  [_,_,_,C,H,S,T,T,T,T,T,T,T,S,H,C,_,_,_,_,_,_,_,_],
-  [_,_,_,H,C,S,T,T,T,T,T,T,T,S,C,H,_,_,_,_,_,_,_,_],
-  [_,_,_,C,_,S,_,T,T,T,T,T,_,S,_,C,_,_,_,_,_,_,_,_],
+  [_,_,_,C,_,_,_,T,T,T,T,T,_,_,_,C,_,_,_,_,_,_,_,_],
   [_,_,_,H,_,_,_,P,P,P,P,P,_,_,_,H,_,_,_,_,_,_,_,_],
   [_,_,_,C,_,_,_,P,P,P,P,P,_,_,_,C,_,_,_,_,_,_,_,_],
   [_,_,_,_,_,_,_,P,P,P,P,P,_,_,_,_,_,_,_,_,_,_,_,_],
@@ -187,16 +215,17 @@ const dogSprite = [
 ];
 
 // ── Scenery palette ──
-const F = '#606060';    // furniture grey
 const D = '#8b6530';    // desk wood
 const d = '#a07840';    // desk wood light
 const R = '#cc3030';    // red (angry/deadline)
 const U = '#2a3a70';    // suit dark blue
 const N = '#303030';    // dark (monitor, hair, shoes)
 const M = '#909090';    // light grey (screen)
+const F = '#7a1a28';    // bug bordeaux (dark)
+const f = '#a83040';    // bug bordeaux (light)
 
-// Desk with monitor — medium obstacle
-const deskSprite = [
+// Bug — bordeaux beetle obstacle
+const bugSprite = [
   [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
   [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
   [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
@@ -204,22 +233,22 @@ const deskSprite = [
   [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
   [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
   [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
-  [_,_,_,_,_,_,_,_,_,N,N,N,N,N,N,_,_,_,_,_,_,_,_,_],
-  [_,_,_,_,_,_,_,_,_,N,M,M,M,M,N,_,_,_,_,_,_,_,_,_],
-  [_,_,_,_,_,_,_,_,_,N,M,M,M,M,N,_,_,_,_,_,_,_,_,_],
-  [_,_,_,_,_,_,_,_,_,N,M,M,M,M,N,_,_,_,_,_,_,_,_,_],
-  [_,_,_,_,_,_,_,_,_,N,N,N,N,N,N,_,_,_,_,_,_,_,_,_],
-  [_,_,_,_,_,_,_,_,_,_,_,N,N,_,_,_,_,_,_,_,_,_,_,_],
-  [_,_,_,_,_,_,_,_,_,_,N,N,N,N,_,_,_,_,_,_,_,_,_,_],
-  [_,_,_,_,_,D,D,D,D,D,D,D,D,D,D,D,D,D,D,_,_,_,_,_],
-  [_,_,_,_,_,D,d,d,d,d,d,d,d,d,d,d,d,d,D,_,_,_,_,_],
-  [_,_,_,_,_,D,D,_,_,_,_,_,_,_,_,_,_,D,D,_,_,_,_,_],
-  [_,_,_,_,_,D,D,_,_,_,_,_,_,_,_,_,_,D,D,_,_,_,_,_],
-  [_,_,_,_,_,D,D,_,_,_,_,_,_,_,_,_,_,D,D,_,_,_,_,_],
-  [_,_,_,_,_,D,D,_,_,_,_,_,_,_,_,_,_,D,D,_,_,_,_,_],
-  [_,_,_,_,_,D,D,_,_,_,_,_,_,_,_,_,_,D,D,_,_,_,_,_],
-  [_,_,_,_,_,D,D,_,_,_,_,_,_,_,_,_,_,D,D,_,_,_,_,_],
-  [_,_,_,_,_,D,D,_,_,_,_,_,_,_,_,_,_,D,D,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,F,_,_,_,_,_,_,F,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,F,_,_,_,_,F,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,F,F,F,F,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,F,F,W,F,W,F,F,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,F,f,f,f,F,f,f,f,F,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,F,_,F,f,R,F,f,F,R,f,F,_,F,_,_,_,_,_,_],
+  [_,_,_,_,F,_,_,F,f,f,f,f,f,f,f,F,_,_,F,_,_,_,_,_],
+  [_,_,_,_,_,F,_,F,f,R,F,f,F,R,f,F,_,F,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,F,f,f,F,f,f,F,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,F,F,F,F,F,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
   [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
 ];
 
@@ -279,7 +308,90 @@ const deadlineSprite = [
   [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
 ];
 
-const allSprites = { run2, jump: jumpFrame, dog: dogSprite, desk: deskSprite, boss: bossSprite, deadline: deadlineSprite };
+const celebrateSprite = [
+  [_,_,_,_,_,C,H,C,H,C,H,C,H,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,C,H,C,H,C,H,C,H,C,H,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,C,H,H,H,H,H,H,H,H,H,H,C,_,_,_,_,_,_,_,_,_],
+  [_,_,C,H,C,H,H,H,H,H,H,H,H,C,H,C,_,_,_,_,_,_,_,_],
+  [_,_,H,C,H,H,H,H,H,H,H,H,H,H,H,C,H,_,_,_,_,_,_,_],
+  [_,_,C,H,H,H,H,H,H,H,H,H,H,H,H,H,C,_,_,_,_,_,_,_],
+  [_,_,H,C,H,H,H,H,H,S,S,S,S,S,S,H,C,_,_,_,_,_,_,_],
+  [_,_,C,H,C,H,H,H,S,S,S,S,S,S,S,H,H,_,_,_,_,_,_,_],
+  [_,_,H,C,S,G,G,G,S,S,S,G,G,G,S,C,H,_,_,_,_,_,_,_],
+  [_,_,_,C,G,L,L,L,G,G,G,L,L,L,G,C,_,_,_,_,_,_,_,_],
+  [S,_,H,C,G,L,L,L,G,S,G,L,L,L,G,C,H,_,S,_,_,_,_,_],
+  [_,S,C,H,S,G,G,G,S,S,S,G,G,G,S,H,C,S,_,_,_,_,_,_],
+  [_,S,H,C,C,S,S,S,S,S,S,S,S,S,C,H,C,S,_,_,_,_,_,_],
+  [_,_,S,H,C,_,S,S,S,S,S,S,S,_,C,H,S,_,_,_,_,_,_,_],
+  [_,_,S,H,C,_,T,T,T,T,T,T,T,_,C,H,S,_,_,_,_,_,_,_],
+  [_,_,_,C,H,_,T,T,T,T,T,T,T,_,H,C,_,_,_,_,_,_,_,_],
+  [_,_,_,H,C,_,T,T,T,T,T,T,T,_,C,H,_,_,_,_,_,_,_,_],
+  [_,_,_,C,_,_,_,T,T,T,T,T,_,_,_,C,_,_,_,_,_,_,_,_],
+  [_,_,_,H,_,_,_,P,P,P,P,P,_,_,_,H,_,_,_,_,_,_,_,_],
+  [_,_,_,C,_,_,_,P,P,P,P,P,_,_,_,C,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,P,P,P,P,P,_,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,O,W,O,_,O,W,O,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
+];
+
+// Sad sprite (tears trailing from face)
+const sadSprite = [
+  [_,_,_,_,_,C,H,C,H,C,H,C,H,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,C,H,C,H,C,H,C,H,C,H,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,C,H,H,H,H,H,H,H,H,H,H,C,_,_,_,_,_,_,_,_,_],
+  [_,_,C,H,C,H,H,H,H,H,H,H,H,C,H,C,_,_,_,_,_,_,_,_],
+  [_,_,H,C,H,H,H,H,H,H,H,H,H,H,H,C,H,_,_,_,_,_,_,_],
+  [_,_,C,H,H,H,H,H,H,H,H,H,H,H,H,H,C,_,_,_,_,_,_,_],
+  [_,_,H,C,H,H,H,H,H,S,S,S,S,S,S,H,C,_,_,_,_,_,_,_],
+  [_,_,C,H,C,H,H,H,S,S,S,S,S,S,S,H,H,_,_,_,_,_,_,_],
+  [_,_,H,C,S,G,G,G,S,S,S,G,G,G,S,C,H,_,_,_,_,_,_,_],
+  [_,_,_,C,G,L,L,L,G,G,G,L,L,L,G,C,_,_,_,_,_,_,_,_],
+  [_,_,H,C,G,L,L,L,G,S,G,L,L,L,G,C,H,_,_,_,_,_,_,_],
+  [_,_,C,H,S,G,G,G,S,S,S,G,G,G,S,H,C,_,_,_,_,_,_,_],
+  [_,_,H,C,C,S,S,S,S,S,S,S,L,S,C,H,C,_,_,_,_,_,_,_],
+  [_,_,C,H,C,_,S,S,S,S,S,S,S,L,C,H,_,_,_,_,_,_,_,_],
+  [_,_,_,H,C,_,T,T,T,T,T,T,T,L,C,H,_,_,_,_,_,_,_,_],
+  [_,_,_,C,H,S,T,T,T,T,T,T,T,L,H,C,_,_,_,_,_,_,_,_],
+  [_,_,_,H,C,S,T,T,T,T,T,T,T,S,C,H,_,_,_,_,_,_,_,_],
+  [_,_,_,C,_,S,_,T,T,T,T,T,_,S,_,C,_,_,_,_,_,_,_,_],
+  [_,_,_,H,_,S,_,P,P,P,P,P,_,S,_,H,_,_,_,_,_,_,_,_],
+  [_,_,_,C,_,_,_,P,P,P,P,P,_,_,_,C,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,P,P,_,P,P,_,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,P,P,P,_,_,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,O,W,_,O,W,_,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,O,O,O,_,O,O,O,_,_,_,_,_,_,_,_,_,_,_],
+];
+
+// Sad dog (tear trailing from left eye)
+const sadDogSprite = [
+  [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,_,K,K,K,K,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,K,K,K,K,K,K,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,K,K,K,K,K,K,K,K,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,K,K,K,E,K,K,E,K,K,K,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,K,K,K,L,K,K,K,K,K,K,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,K,K,_,L,K,K,K,_,K,K,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,_,L,W,W,K,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,_,K,K,K,K,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,_,K,K,K,K,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,K,K,W,W,K,K,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,K,K,W,W,K,K,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,K,K,K,K,K,K,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,W,K,K,K,K,K,K,W,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,K,K,_,_,K,K,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,K,K,_,_,K,K,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,W,W,_,_,W,W,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
+  [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_],
+];
+
+const allSprites = { run2, jump: jumpFrame, dog: dogSprite, bug: bugSprite, boss: bossSprite, deadline: deadlineSprite, celebrate: celebrateSprite, sad: sadSprite, sadDog: sadDogSprite };
 
 function drawSprite(canvasId, sprite) {
   const canvas = document.getElementById(canvasId);
@@ -364,7 +476,8 @@ const DOG_DX = 10;
 const DOG_DY = 2;
 const COMBO_W = 32;
 
-function drawCombo(canvasId, charSprite, dogDy) {
+function drawCombo(canvasId, charSprite, dogDy, dog) {
+  dog = dog || dogSprite;
   const canvas = document.getElementById(canvasId);
   const ctx = canvas.getContext('2d');
   const scale = 10;
@@ -386,13 +499,13 @@ function drawCombo(canvasId, charSprite, dogDy) {
     }
   }
 
-  for (let y = 0; y < dogSprite.length; y++) {
-    for (let x = 0; x < dogSprite[y].length; x++) {
-      if (dogSprite[y][x]) {
+  for (let y = 0; y < dog.length; y++) {
+    for (let x = 0; x < dog[y].length; x++) {
+      if (dog[y][x]) {
         const dx = x + DOG_DX;
         const dy = y + dogDy;
         if (dx < COMBO_W && dy < 24) {
-          ctx.fillStyle = dogSprite[y][x];
+          ctx.fillStyle = dog[y][x];
           ctx.fillRect(dx * scale, dy * scale, scale, scale);
         }
       }
@@ -438,9 +551,14 @@ drawCombo('jumpDog', jumpFrame, 0);
 drawSprite('run2', run2);
 drawSprite('jump', jumpFrame);
 drawSprite('dog', dogSprite);
-drawSprite('desk', deskSprite);
+drawSprite('bug', bugSprite);
 drawSprite('boss', bossSprite);
 drawSprite('deadline', deadlineSprite);
+drawSprite('sad', sadSprite);
+drawSprite('sadDog', sadDogSprite);
+drawCombo('sadCombo', sadSprite, DOG_DY, sadDogSprite);
+drawSprite('celebrate', celebrateSprite);
+drawCombo('celebrateDog', celebrateSprite, DOG_DY);
 </script>
 </body>
 </html>
