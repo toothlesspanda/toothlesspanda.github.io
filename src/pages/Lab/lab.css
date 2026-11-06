@@ -457,9 +457,8 @@
   gap: 20px;
   font-family: var(--font);
   font-size: 0.7em;
-  color: var(--text-muted);
+  color: var(--text);
   letter-spacing: 1px;
-  opacity: 0.8;
 }
 
 .lab__controls-help span {
@@ -473,9 +472,9 @@
 .lab__help-toggle {
   display: none;
   background: var(--surface-alt);
-  border: 1px solid var(--border);
+  border: 1px solid #3a3830;
   border-radius: 12px;
-  color: var(--text-muted);
+  color: var(--text);
   font-family: var(--font);
   font-size: 0.65em;
   padding: 4px 12px;
@@ -485,18 +484,32 @@
 
 .lab__social-inline {
   display: flex;
-  gap: 20px;
+  gap: 12px;
 }
 
+/* Small round buttons, same purple as the A/B buttons */
 .lab__social-inline a {
-  color: var(--text-muted);
-  opacity: 0.8;
-  transition: opacity 0.2s, color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #8a3898 0%, #6a2078 100%);
+  border: 1px solid #5a1860;
+  color: #e8d0f0;
+  box-shadow: 0 3px 0 #3a0e38;
+  transition: background 0.15s, transform 0.1s, box-shadow 0.1s;
 }
 
 .lab__social-inline a:hover {
-  opacity: 1;
-  color: var(--yellow);
+  background: linear-gradient(180deg, #9a48a8 0%, #7a2888 100%);
+  color: #fff;
+}
+
+.lab__social-inline a:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 #3a0e38;
 }
 
 /* ── Back link ── */
@@ -844,10 +857,25 @@
     font-size: 0.6em;
     flex-wrap: wrap;
     justify-content: center;
+    /* Card so the text stays readable over the d-pad/buttons */
+    background: var(--surface);
+    border: 1px solid #3a3830;
+    border-radius: 8px;
+    padding: 8px 12px;
   }
 
   .lab__help-toggle {
     display: block;
+  }
+
+  .lab__social-inline {
+    gap: 16px;
+  }
+
+  /* Bigger touch target on mobile */
+  .lab__social-inline a {
+    width: 38px;
+    height: 38px;
   }
 
   .lab__game-title {
