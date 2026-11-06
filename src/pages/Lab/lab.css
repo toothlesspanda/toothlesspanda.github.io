@@ -840,11 +840,15 @@
     padding: 16px;
   }
 
+  /* In the page flow on mobile, so the instructions push content
+     instead of covering the d-pad / A-B buttons */
   .lab__footer {
+    position: static;
+    margin-top: auto;
     flex-direction: column;
     gap: 8px;
     align-items: center;
-    padding: 8px 16px;
+    padding: 16px;
   }
 
   .lab__controls-help {
@@ -857,19 +861,35 @@
     font-size: 0.6em;
     flex-wrap: wrap;
     justify-content: center;
-    /* Card so the text stays readable over the d-pad/buttons */
     background: var(--surface);
     border: 1px solid #3a3830;
     border-radius: 8px;
     padding: 8px 12px;
+    /* Keep clear of the pinned social bar when scrolled into view */
+    scroll-margin-bottom: 84px;
   }
 
   .lab__help-toggle {
     display: block;
   }
 
+  /* Social bar pinned to the bottom so it's always visible */
   .lab__social-inline {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    justify-content: center;
     gap: 16px;
+    padding: 10px 0 calc(12px + env(safe-area-inset-bottom));
+    background: var(--bg);
+    border-top: 1px solid var(--border);
+    z-index: 10;
+  }
+
+  /* Reserve space for the pinned social bar */
+  .lab {
+    padding-bottom: 72px;
   }
 
   /* Bigger touch target on mobile */

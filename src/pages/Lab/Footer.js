@@ -1,8 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Linkedin, Medium, Github, Instagram } from "react-bootstrap-icons";
 
 const Footer = () => {
   const [showHelp, setShowHelp] = useState(false);
+  const helpRef = useRef(null);
+
+  // On mobile the instructions open below the controls; bring them into view
+  useEffect(() => {
+    if (showHelp) helpRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+  }, [showHelp]);
 
   return (
     <div className="lab__footer">
@@ -19,7 +25,7 @@ const Footer = () => {
         {showHelp ? '✕ close' : '? instructions'}
       </button>
       {showHelp && (
-        <div className="lab__controls-help lab__controls-help--mobile">
+        <div ref={helpRef} className="lab__controls-help lab__controls-help--mobile">
           <span>↑ ↓ navigate</span>
           <span>[A] / [SPACE] select</span>
           <span>[B] / [ESC] back</span>
