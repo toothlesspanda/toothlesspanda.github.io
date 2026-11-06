@@ -151,8 +151,9 @@
 
 .lab__hub {
   position: relative;
-  width: 580px;
-  height: 580px;
+  /* Shrink on short screens so the title isn't cut off (580px = canvas size) */
+  width: clamp(360px, 100vh - 280px, 580px);
+  height: clamp(360px, 100vh - 280px, 580px);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -848,7 +849,7 @@
     flex-direction: column;
     gap: 8px;
     align-items: center;
-    padding: 16px;
+    padding: 0 16px;
   }
 
   .lab__controls-help {
@@ -865,12 +866,19 @@
     border: 1px solid #3a3830;
     border-radius: 8px;
     padding: 8px 12px;
+    margin: 8px 0 16px;
     /* Keep clear of the pinned social bar when scrolled into view */
     scroll-margin-bottom: 84px;
   }
 
+  /* Sits in the social bar, same height as the social buttons */
   .lab__help-toggle {
     display: block;
+    height: 38px;
+    padding: 0 14px;
+    border-radius: 19px;
+    font-size: 0.75em;
+    white-space: nowrap;
   }
 
   /* Social bar pinned to the bottom so it's always visible */

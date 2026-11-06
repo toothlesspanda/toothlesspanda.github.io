@@ -18,12 +18,6 @@ const Footer = () => {
         <span>[B] / [ESC] back</span>
         <span>[A]+[B] unlock</span>
       </div>
-      <button
-        className="lab__help-toggle"
-        onClick={() => setShowHelp((v) => !v)}
-      >
-        {showHelp ? '✕ close' : '? instructions'}
-      </button>
       {showHelp && (
         <div ref={helpRef} className="lab__controls-help lab__controls-help--mobile">
           <span>↑ ↓ navigate</span>
@@ -33,6 +27,12 @@ const Footer = () => {
         </div>
       )}
       <div className="lab__social-inline">
+        <button
+          className="lab__help-toggle"
+          onClick={() => setShowHelp((v) => !v)}
+        >
+          {showHelp ? '✕ close' : '? help'}
+        </button>
         <a target="_blank" rel="noreferrer" href="https://www.linkedin.com/in/inesdematos/" title="LinkedIn">
           <Linkedin size={16} />
         </a>
