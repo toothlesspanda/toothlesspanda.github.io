@@ -63,7 +63,7 @@ const Layout = ({ children }) => {
           <a target="_blank" rel="noreferrer" href="https://github.com/toothlesspanda" title="GitHub">
             <Github size={20} />
           </a>
-          <a target="_blank" rel="noreferrer" href="https://www.instagram.com/nenas.phot/" title="Instagram">
+          <a target="_blank" rel="noreferrer" href="https://www.instagram.com/nenas.shots/" title="Instagram">
             <Instagram size={20} />
           </a>
         </div>
